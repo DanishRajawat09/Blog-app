@@ -1,3 +1,4 @@
+import Footer from "../components/Footer";
 import BlogList from "../components/HomeComponents/BlogList";
 import Hero from "../components/HomeComponents/Hero";
 import NewsLetter from "../components/HomeComponents/NewsLetter";
@@ -7,9 +8,10 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <Hero/>
-      <BlogList/>
-      <NewsLetter/>
+      <Hero />
+      <BlogList />
+      <NewsLetter />
+      <Footer />
     </>
   );
 };
