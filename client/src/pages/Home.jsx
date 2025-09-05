@@ -1,5 +1,6 @@
 import BlogList from "../components/HomeComponents/BlogList";
 import Hero from "../components/HomeComponents/Hero";
+import NewsLetter from "../components/HomeComponents/NewsLetter";
 import Navbar from "../components/Navbar";
 
 const Home = () => {
@@ -8,6 +9,7 @@ const Home = () => {
       <Navbar />
       <Hero/>
       <BlogList/>
+      <NewsLetter/>
     </>
   );
 };
