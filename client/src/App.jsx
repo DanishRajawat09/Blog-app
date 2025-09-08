@@ -6,13 +6,14 @@ import Dashboard from "./pages/admin/Dashboard";
 import AddBlog from "./pages/admin/Addblog";
 import ListBlog from "./pages/admin/Listblog";
 import Comments from "./pages/admin/Comments";
+import Login from "./components/adminComponents/Login";
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog/:id" element={<Blog />} />
-        <Route path="/admin" element={<Layout />}>
+        <Route path="/admin" element={false ?<Layout/> : <Login/>}>
           <Route index element={<Dashboard />} />
           <Route path="add-blog" element={<AddBlog />} />
           <Route path="list-blog" element={<ListBlog />} />
