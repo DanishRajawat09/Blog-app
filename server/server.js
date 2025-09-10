@@ -2,7 +2,7 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import connect from "./db/connectDB.js";
-import userRouter from "./routes/user.route.js";
+import adminRouter from "./routes/admin.route.js";
 const app = express();
 
 // middlewares
@@ -10,8 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/user" , userRouter)
-
+app.use("/admin", adminRouter);
 
 const PORT = process.env.PORT || 3000;
 
