@@ -1,98 +1,91 @@
-import ms from "ms";
 import { Admin } from "../models/admin.model.js";
 import { emailRegex } from "../utils/regex.js";
 import { cookieOptions } from "../utils/cookieOptions.js";
+import { throwError } from "../utils/errorHelper.js";
+import { generateTokens } from "../utils/generateTokens.js"; 
 
 export const registerAdmin = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     if (!email || !emailRegex.test(email)) {
-      throw new Error("Email is Required, please provide valid email");
+      throwError("Email is required. Please provide a valid email.", 400);
     }
+
     if (!password) {
-      throw new Error("password is required");
+      throwError("Password is required.", 400);
     }
 
-    const existedAdmin = await Admin.findOne({ email: email });
-
+    const existedAdmin = await Admin.findOne({ email });
     if (existedAdmin) {
-      throw new Error(
-        "Admin is Already Existed, With same email please login or register with another email"
-      );
+      throwError("Admin already exists with this email. Please login instead.", 409);
     }
 
-    const admin = await Admin.create({ email: email, password: password });
-
+    const admin = await Admin.create({ email, password });
     if (!admin) {
-      throw new Error("Server Error , while creating admin");
+      throwError("Server error while creating admin.", 500);
     }
 
     const { accessToken, refreshToken } = await generateTokens(admin._id);
-
     if (!accessToken || !refreshToken) {
-      throw new Error("error: could not generate tokens ");
+      throwError("Could not generate tokens.", 500);
     }
+
     const accessCookieOption = await cookieOptions("JWT_ACCESSTOKEN_EXPIRY");
     const refreshCookieOption = await cookieOptions("JWT_REFRESHTOKEN_EXPIRY");
+    if (!accessCookieOption) throwError("Access cookie options not found.", 500);
+    if (!refreshCookieOption) throwError("Refresh cookie options not found.", 500);
 
-    if (!accessCookieOption) {
-      throw new Error("access cookie opion not found");
-    }
-    if (!refreshCookieOption) {
-      throw new Error("refresh cookie opion not found");
-    }
     res
-      .status(200)
+      .status(201)
       .cookie("accessToken", accessToken, accessCookieOption)
       .cookie("refreshToken", refreshToken, refreshCookieOption)
-      .json({ message: "user register successfully", data: admin });
+      .json({ message: "Admin registered successfully", data: admin });
+
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
 
 export const adminLogin = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     if (!email || !emailRegex.test(email)) {
-      throw new Error("Enter valid email for login");
+      throwError("Please enter a valid email to login.", 400);
     }
+
     if (!password) {
-      throw new Error("Password is required");
+      throwError("Password is required.", 400);
     }
 
-    const admin = await Admin.findOne({ email: email });
+    const admin = await Admin.findOne({ email });
     if (!admin) {
-      throw new Error("admin not found , register first");
+      throwError("Admin not found. Please register first.", 404);
     }
-    const isPasswordCorrect = await admin.isPasswordCorrect(password);
 
+    const isPasswordCorrect = await admin.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
-      throw new Error("incorrect password , try again");
+      throwError("Incorrect password. Please try again.", 401);
     }
 
     const { accessToken, refreshToken } = await generateTokens(admin._id);
-
     if (!accessToken || !refreshToken) {
-      throw new Error("could not generate tokens");
+      throwError("Could not generate tokens.", 500);
     }
 
     const accessCookieOption = await cookieOptions("JWT_ACCESSTOKEN_EXPIRY");
     const refreshCookieOption = await cookieOptions("JWT_REFRESHTOKEN_EXPIRY");
-
-    if (!accessCookieOption) {
-      throw new Error("access cookie opion not found for login");
-    }
-    if (!refreshCookieOption) {
-      throw new Error("refresh cookie opion not found for login");
-    }
+    if (!accessCookieOption) throwError("Access cookie options not found.", 500);
+    if (!refreshCookieOption) throwError("Refresh cookie options not found.", 500);
 
     res
       .status(200)
       .cookie("accessToken", accessToken, accessCookieOption)
       .cookie("refreshToken", refreshToken, refreshCookieOption)
-      .json({ message: "user log in successfull", data: admin });
+      .json({ message: "Admin logged in successfully", data: admin });
+
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
