@@ -5,18 +5,22 @@ import { throwError } from "../utils/errorHelper.js";
 import { generateTokens } from "../utils/generateTokens.js";
 
 export const registerAdmin = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
 
   try {
     if (!email || !emailRegex.test(email)) {
       throwError("Email is required. Please provide a valid email.", 400);
     }
 
+    if (!username) {
+      throwError("UserName is required,", 400);
+    }
+
     if (!password) {
       throwError("Password is required.", 400);
     }
 
-    const existedAdmin = await Admin.findOne({ email });
+    const existedAdmin = await Admin.findOne({ email, username });
     if (existedAdmin) {
       throwError(
         "Admin already exists with this email. Please login instead.",
@@ -24,7 +28,7 @@ export const registerAdmin = async (req, res) => {
       );
     }
 
-    const admin = await Admin.create({ email, password });
+    const admin = await Admin.create({ email, password, username });
     if (!admin) {
       throwError("Server error while creating admin.", 500);
     }
@@ -99,20 +103,20 @@ export const adminLogout = async (req, res) => {
   try {
     const userId = req.user?._id;
     if (!userId) {
-      throwError(400, "User ID not found, cannot log out");
+      throwError("User ID not found, cannot log out", 400);
     }
 
     const admin = await Admin.findById(userId);
     if (!admin) {
-      throwError(400, "Cannot find your account for logout");
+      throwError("Cannot find your account for logout", 400);
     }
 
     const accessCookieOption = cookieOptions("JWT_ACCESSTOKEN_EXPIRY");
     const refreshCookieOption = cookieOptions("JWT_REFRESHTOKEN_EXPIRY");
 
-    if (!accessCookieOption) throwError(500, "Access cookie options not found");
+    if (!accessCookieOption) throwError("Access cookie options not found", 500);
     if (!refreshCookieOption)
-      throwError(500, "Refresh cookie options not found");
+      throwError("Refresh cookie options not found", 500);
 
     res
       .clearCookie("accessToken", accessCookieOption)
