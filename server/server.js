@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/admin", adminRouter);
+app.use("/api/v1/admin", adminRouter);
 
 const PORT = process.env.PORT || 3000;
 
