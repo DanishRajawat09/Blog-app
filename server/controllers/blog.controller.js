@@ -73,3 +73,72 @@ export const addBlog = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
+
+export const getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ isPublished: true });
+
+    if (blogs.length === 0) {
+      return res.status(200).json({
+        message: "No blogs for now",
+        data: [],
+      });
+    }
+
+    res.status(200).json({
+      message: "Getting blogs successfully",
+      data: blogs,
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const getBlogById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      throwError("blog id not found", 400);
+    }
+
+    const blog = await Blog.findById({ _id: id });
+
+    if (!blog) {
+      throwError("give me a valid id for blog", 500);
+    }
+    res
+      .status(200)
+      .json({ message: "get blog by id successfully", data: blog });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const deleteBlogById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    if (!id) {
+      throwError("blog id is not found", 400);
+    }
+
+    if (!userId) {
+      throwError("Unauthorized Request, cannot delete blog", 401);
+    }
+
+    const deletedBlog = await Blog.deleteOne({ _id: id, author: userId });
+
+    if (deletedBlog.deletedCount === 0) {
+      throwError("Blog not found or could not be deleted", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Blog deleted successfully",
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
