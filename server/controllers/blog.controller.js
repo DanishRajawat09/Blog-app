@@ -2,6 +2,7 @@ import { throwError } from "../utils/errorHelper.js";
 import fs from "fs";
 import imagekit from "../config/imagekit.config.js";
 import { Blog } from "../models/blog.model.js";
+import { Comment } from "../models/comment.model.js";
 export const addBlog = async (req, res) => {
   try {
     const { title, subTitle, description, category, isPublished } = req.body;
@@ -185,6 +186,28 @@ export const togglePublished = async (req, res) => {
     res
       .status(200)
       .json({ message: "blog isPublished value is change", success: true });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const addComment = async (req, res) => {
+  try {
+    const { blog, name, content } = req.body;
+
+    if ([blog, name, content].some((item) => !item)) {
+      throwError("blog, name, content, is required");
+    }
+
+    const comment = await Comment.create({ blog, name, content });
+
+    if (!comment) {
+      throwError("could not create Comment in database, try again", 500);
+    }
+
+    res
+      .status(200)
+      .json({ message: "Comment added for review", success: true });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

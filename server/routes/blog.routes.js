@@ -14,7 +14,7 @@ const router = Router();
 
 router.route("/create-blog").post(verifyJWT, upload.single("image"), addBlog);
 
-router.route("/").get(getAllBlogs);
+router.route("/all").get(getAllBlogs);
 
 router.route("/get-blog/:id").get(getBlogById);
 
