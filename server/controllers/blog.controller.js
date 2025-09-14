@@ -143,7 +143,7 @@ export const deleteBlogById = async (req, res) => {
   }
 };
 
- export const getAdminBlogs = async (req, res) => {
+export const getAdminBlogs = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -166,11 +166,26 @@ export const deleteBlogById = async (req, res) => {
   }
 };
 
-
-export const togglePublished = async (req ,res) => {
+export const togglePublished = async (req, res) => {
   try {
-    
+    const { id } = req.body;
+    if (!id) {
+      throwError("could not get id for toggle published", 404);
+    }
+
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      throwError("cannot find blog by this id", 404);
+    }
+
+    blog.isPublished = !blog.isPublished;
+    await blog.save({ validateBeforeSave: false });
+
+    res
+      .status(200)
+      .json({ message: "blog isPublished value is change", success: true });
   } catch (error) {
-    
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
-}
+};
