@@ -142,3 +142,35 @@ export const deleteBlogById = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
+
+ export const getAdminBlogs = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!userId) {
+      throwError("Unauthorized Request, login first", 401);
+    }
+
+    const adminBlogs = await Blog.find({ author: userId });
+
+    if (adminBlogs.length === 0) {
+      return res.status(404).json({ message: "No blogs found for this admin" });
+    }
+
+    res.status(200).json({
+      message: "get admin blogs successfully",
+      data: adminBlogs,
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+
+export const togglePublished = async (req ,res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
