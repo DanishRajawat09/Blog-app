@@ -1,10 +1,12 @@
 import { Router } from "express";
 import {
   addBlog,
+  addComment,
   deleteBlogById,
   getAdminBlogs,
   getAllBlogs,
   getBlogById,
+  getBlogComments,
   togglePublished,
 } from "../controllers/blog.controller.js";
 import upload from "../middlewares/multer.middleware.js";
@@ -23,5 +25,11 @@ router.route("/delete-blog/:id").delete(verifyJWT, deleteBlogById);
 router.route("/admin").get(verifyJWT, getAdminBlogs);
 
 router.route("/ispublished").patch(verifyJWT, togglePublished);
+
+
+// comments route
+router.route("/add-comment").post(verifyJWT,addComment)
+
+router.route("/comments").get(getBlogComments)
 
 export default router;

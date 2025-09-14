@@ -196,7 +196,7 @@ export const addComment = async (req, res) => {
     const { blog, name, content } = req.body;
 
     if ([blog, name, content].some((item) => !item)) {
-      throwError("blog, name, content, is required");
+      throwError("blog, name, content, is required", 400);
     }
 
     const comment = await Comment.create({ blog, name, content });
@@ -208,6 +208,29 @@ export const addComment = async (req, res) => {
     res
       .status(200)
       .json({ message: "Comment added for review", success: true });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const getBlogComments = async (req, res) => {
+  try {
+    const { blogId } = req.body;
+    if (!blogId) {
+      throwError("plz provide the blog id", 402);
+    }
+
+    const comments = await Comment.find({ blog: blogId, isApproved: true }).sort({createdAt : -1});
+
+    if (comments.length === 0) {
+      res.status(200).json({ message: "No Cmments" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "get all comments of this blog",
+      comments: comments,
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
