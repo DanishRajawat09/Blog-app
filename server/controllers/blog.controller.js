@@ -152,7 +152,9 @@ export const getAdminBlogs = async (req, res) => {
       throwError("Unauthorized Request, login first", 401);
     }
 
-    const adminBlogs = await Blog.find({ author: userId });
+    const adminBlogs = await Blog.find({ author: userId }).sort({
+      createdAt: -1,
+    });
 
     if (adminBlogs.length === 0) {
       return res.status(404).json({ message: "No blogs found for this admin" });
@@ -198,8 +200,17 @@ export const addComment = async (req, res) => {
     if ([blog, name, content].some((item) => !item)) {
       throwError("blog, name, content, is required", 400);
     }
+    const blogData = await Blog.findById(blog);
+    if (!blogData) {
+      throwError("Blog not found", 404);
+    }
 
-    const comment = await Comment.create({ blog, name, content });
+    const comment = await Comment.create({
+      blog,
+      name,
+      content,
+      blogAuthor: blogData.author,
+    });
 
     if (!comment) {
       throwError("could not create Comment in database, try again", 500);
@@ -220,7 +231,10 @@ export const getBlogComments = async (req, res) => {
       throwError("plz provide the blog id", 402);
     }
 
-    const comments = await Comment.find({ blog: blogId, isApproved: true }).sort({createdAt : -1});
+    const comments = await Comment.find({
+      blog: blogId,
+      isApproved: true,
+    }).sort({ createdAt: -1 });
 
     if (comments.length === 0) {
       res.status(200).json({ message: "No Cmments" });
@@ -231,6 +245,27 @@ export const getBlogComments = async (req, res) => {
       message: "get all comments of this blog",
       comments: comments,
     });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const getAllAdminComments = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!userId) {
+      throwError("UnAuthorized Request, cannot get adminId", 401);
+    }
+    const comments = await Comment.find({ blogAuthor: userId })
+      .populate("blog")
+      .sort({ createdAt: -1 });
+
+    if (!comments || comments.length === 0) {
+      throwError("No comments found on your blogs", 404);
+    }
+
+    res.status(200).json({ message: "get admin comments", comments: comments });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
