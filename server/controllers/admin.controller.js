@@ -127,3 +127,12 @@ export const adminLogout = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
+
+
+export const getDashboard = async (req ,res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
