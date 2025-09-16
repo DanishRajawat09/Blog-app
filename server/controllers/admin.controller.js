@@ -191,9 +191,9 @@ export const deleteCommentById = async (req, res) => {
   }
 };
 
-export const approvedCommentByID = async (req,res) => {
+export const approvedCommentByID = async (req, res) => {
   try {
-       const { commentId } = req.params;
+    const { commentId } = req.params;
     const userId = req.user._id;
     if (!commentId) {
       throwError("could not get BlogId ", 402);
@@ -202,13 +202,18 @@ export const approvedCommentByID = async (req,res) => {
       throwError("Unauthorized Request, cannot get admin Id", 401);
     }
 
-    const comment = await Comment.findOneAndUpdate({_id : commentId , blogAuthor : userId} , {isApproved : true})
+    const comment = await Comment.findOneAndUpdate(
+      { _id: commentId, blogAuthor: userId },
+      { isApproved: true }
+    );
 
     if (!comment) {
-       throwError("could not update is approved , try again", 500);
+      throwError("could not update is approved , try again", 500);
     }
-        res.status(200).json({ message: "comment isApproved property wil be true" });
+    res
+      .status(200)
+      .json({ message: "comment isApproved property wil be true" });
   } catch (error) {
-        res.status(error.statusCode || 500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
-}
+};
