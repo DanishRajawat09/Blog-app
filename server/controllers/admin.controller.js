@@ -3,7 +3,8 @@ import { emailRegex } from "../utils/regex.js";
 import { cookieOptions } from "../utils/cookieOptions.js";
 import { throwError } from "../utils/errorHelper.js";
 import { generateTokens } from "../utils/generateTokens.js";
-
+import { Blog } from "../models/blog.model.js";
+import { Comment } from "../models/comment.model.js";
 export const registerAdmin = async (req, res) => {
   const { email, password, username } = req.body;
 
@@ -128,11 +129,86 @@ export const adminLogout = async (req, res) => {
   }
 };
 
-
-export const getDashboard = async (req ,res) => {
+export const getDashboard = async (req, res) => {
   try {
-    
+    const userId = req.user._id;
+    if (!userId) {
+      throwError("Unauthorized Request, cannot get admin Id", 401);
+    }
+    const recentBlog = await Blog.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    if (!recentBlog) {
+      throwError("error while getting recent blogs", 500);
+    }
+
+    const blogs = await Blog.countDocuments({ author: userId });
+
+    const comments = await Comment.countDocuments({ blogAuthor: userId });
+
+    const draft = await Blog.countDocuments({
+      author: userId,
+      isPublished: false,
+    });
+
+    const dashBoardData = {
+      blogs,
+      comments,
+      draft,
+      recentBlog,
+    };
+
+    res.status(200).json({ message: "Dashboard Data", dashBoardData });
   } catch (error) {
-    
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const deleteCommentById = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const userId = req.user._id;
+    if (!commentId) {
+      throwError("could not get BlogId ", 402);
+    }
+    if (!userId) {
+      throwError("Unauthorized Request, cannot get admin Id", 401);
+    }
+
+    const deleteComment = await Comment.findOneAndDelete({
+      _id: commentId,
+      blogAuthor: userId,
+    });
+
+    if (!deleteComment) {
+      throwError("could not delete the comment, try again", 500);
+    }
+
+    res.status(200).json({ message: "comment is deleted" });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const approvedCommentByID = async (req,res) => {
+  try {
+       const { commentId } = req.params;
+    const userId = req.user._id;
+    if (!commentId) {
+      throwError("could not get BlogId ", 402);
+    }
+    if (!userId) {
+      throwError("Unauthorized Request, cannot get admin Id", 401);
+    }
+
+    const comment = await Comment.findOneAndUpdate({_id : commentId , blogAuthor : userId} , {isApproved : true})
+
+    if (!comment) {
+       throwError("could not update is approved , try again", 500);
+    }
+        res.status(200).json({ message: "comment isApproved property wil be true" });
+  } catch (error) {
+        res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
