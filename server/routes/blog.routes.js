@@ -4,6 +4,7 @@ import {
   addComment,
   deleteBlogById,
   getAdminBlogs,
+  getAllAdminComments,
   getAllBlogs,
   getBlogById,
   getBlogComments,
@@ -32,4 +33,5 @@ router.route("/add-comment").post(verifyJWT,addComment)
 
 router.route("/comments").get(getBlogComments)
 
+router.route("/admin-comments").get(verifyJWT, getAllAdminComments)
 export default router;
