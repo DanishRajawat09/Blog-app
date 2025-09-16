@@ -135,6 +135,12 @@ export const deleteBlogById = async (req, res) => {
       throwError("Blog not found or could not be deleted", 404);
     }
 
+    const deleteComment = await Comment.deleteMany({ blog: id });
+
+    if (deleteComment.deletedCount === 0) {
+      throwError("comments not found or could not be deleted", 404);
+    }
+
     res.status(200).json({
       success: true,
       message: "Blog deleted successfully",
@@ -270,4 +276,3 @@ export const getAllAdminComments = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
-
