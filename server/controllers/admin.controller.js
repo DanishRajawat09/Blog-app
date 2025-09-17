@@ -5,6 +5,23 @@ import { throwError } from "../utils/errorHelper.js";
 import { generateTokens } from "../utils/generateTokens.js";
 import { Blog } from "../models/blog.model.js";
 import { Comment } from "../models/comment.model.js";
+
+export const adminData = async (req, res) => {
+  try {
+    const {_id} = req.user
+    if (!_id) {
+      throwError("Unauthorized Request login r register first", 401)
+    }
+
+    const adminInfo = await Admin.findById(_id)
+    if (!adminInfo) {
+      throwError("user not found, register first",401)
+    }
+    res.status(200).json({success : true , message : "got admin info" , adminInfo})
+  } catch (error) {
+        res.status(error.statusCode || 500).json({ error: error.message });
+  }
+}
 export const registerAdmin = async (req, res) => {
   const { email, password, username } = req.body;
 

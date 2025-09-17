@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  adminData,
   adminLogin,
   adminLogout,
   approvedCommentByID,
@@ -10,6 +11,7 @@ import {
 import verifyJWT from "../middlewares/verifyJWT.middleware.js";
 const router = Router();
 
+router.route("/info").get(verifyJWT , adminData)
 router.route("/register").post(registerAdmin);
 router.route("/login").post(adminLogin);
 router.route("/logout").post(verifyJWT, adminLogout);

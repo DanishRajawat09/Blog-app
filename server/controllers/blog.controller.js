@@ -82,13 +82,15 @@ export const getAllBlogs = async (req, res) => {
     if (blogs.length === 0) {
       return res.status(200).json({
         message: "No blogs for now",
-        data: [],
+        blogs: [],
+        success : false
       });
     }
 
     res.status(200).json({
+      success : true,
       message: "Getting blogs successfully",
-      data: blogs,
+      blogs: blogs,
     });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
