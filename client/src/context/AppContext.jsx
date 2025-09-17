@@ -29,6 +29,7 @@ const [loading , setLoading] = useState(false)
       setLoading(false) 
     } catch (error) {
       toast.error(error.message)
+       setLoading(false) 
     }
    }
 

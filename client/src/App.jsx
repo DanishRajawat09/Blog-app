@@ -6,17 +6,21 @@ import Dashboard from "./pages/admin/Dashboard";
 import AddBlog from "./pages/admin/Addblog";
 import ListBlog from "./pages/admin/Listblog";
 import Comments from "./pages/admin/Comments";
-import Login from "./components/adminComponents/Login";
 import "quill/dist/quill.snow.css"
 import {Toaster} from "react-hot-toast"
+import ProtectedRoute from "./components/ProtectedRoute";
 const App = () => {
+
+
   return (
     <div>
       <Toaster/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog/:id" element={<Blog />} />
-        <Route path="/admin" element={true ?<Layout/> : <Login/>}>
+        <Route path="/admin" element={<ProtectedRoute>
+          <Layout/>
+        </ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="add-blog" element={<AddBlog />} />
           <Route path="list-blog" element={<ListBlog />} />

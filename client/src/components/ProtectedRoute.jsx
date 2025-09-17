@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAppContext } from '../context/appContext'
-import { Navigate } from 'react-router'
+import Login from './adminComponents/Login'
 
 
 const ProtectedRoute = ({children}) => {
@@ -9,8 +9,9 @@ const ProtectedRoute = ({children}) => {
     return <div>loading....</div>
   }
 
-  if (!admin) {
-   return <Navigate to="/login" replace/>
+
+  if (!admin.length > 0) {
+   return <Login/>
   }
 
   return children
