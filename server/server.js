@@ -4,12 +4,13 @@ import cors from "cors";
 import connect from "./db/connectDB.js";
 import adminRouter from "./routes/admin.route.js";
 import blogRouter from "./routes/blog.routes.js";
+import cookieParser from "cookie-parser";
 const app = express();
 
 // middlewares
-app.use(cors({origin : "http://localhost:5173" , credentials : true}));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
-
+app.use(cookieParser());
 // Routes
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/blog", blogRouter);
