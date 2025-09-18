@@ -7,12 +7,14 @@ import {
   deleteCommentById,
   getDashboard,
   registerAdmin,
+  checkUserName,
 } from "../controllers/admin.controller.js";
 import verifyJWT from "../middlewares/verifyJWT.middleware.js";
 const router = Router();
 
 router.route("/info").get(verifyJWT , adminData)
 router.route("/register").post(registerAdmin);
+router.route("/username").get(checkUserName)
 router.route("/login").post(adminLogin);
 router.route("/logout").post(verifyJWT, adminLogout);
 router.route("/dashboard").get(verifyJWT, getDashboard);

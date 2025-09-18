@@ -8,20 +8,22 @@ import { Comment } from "../models/comment.model.js";
 
 export const adminData = async (req, res) => {
   try {
-    const {_id} = req.user
+    const { _id } = req.user;
     if (!_id) {
-      throwError("Unauthorized Request login r register first", 401)
+      throwError("Unauthorized Request login r register first", 401);
     }
 
-    const adminInfo = await Admin.findById(_id)
+    const adminInfo = await Admin.findById(_id);
     if (!adminInfo) {
-      throwError("user not found, register first",401)
+      throwError("user not found, register first", 401);
     }
-    res.status(200).json({success : true , message : "got admin info" , adminInfo})
+    res
+      .status(200)
+      .json({ success: true, message: "got admin info", adminInfo });
   } catch (error) {
-        res.status(error.statusCode || 500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
-}
+};
 export const registerAdmin = async (req, res) => {
   const { email, password, username } = req.body;
 
@@ -67,7 +69,42 @@ export const registerAdmin = async (req, res) => {
       .status(201)
       .cookie("accessToken", accessToken, accessCookieOption)
       .cookie("refreshToken", refreshToken, refreshCookieOption)
-      .json({ message: "Admin registered successfully", data: admin });
+      .json({ success : true , message: "Admin registered successfully", data: admin });
+  } catch (error) {
+    console.log(error.message);
+    console.log(error);
+    
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const checkUserName = async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+console.log(req.query);
+
+      return res.status(400).json({
+        success: false,
+        message: "Username is required",
+      });
+    }
+
+    // findOne is faster than find for a single match
+    const admin = await Admin.findOne({ username });
+
+    if (admin) {
+      return res.status(200).json({
+        success: false,
+        message: "Username is already taken",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Username is available",
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

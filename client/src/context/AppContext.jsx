@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.withCredentials = true
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -26,10 +27,12 @@ const [loading , setLoading] = useState(false)
       setLoading(true)
       const {data} = await axios.get("/api/v1/admin/info")
       data.success && setAdmin(data.adminInfo)
-      setLoading(false) 
+
     } catch (error) {
       toast.error(error.message)
-       setLoading(false) 
+       
+    }finally {
+      setLoading(false) 
     }
    }
 
