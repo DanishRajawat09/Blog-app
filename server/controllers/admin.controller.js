@@ -69,11 +69,15 @@ export const registerAdmin = async (req, res) => {
       .status(201)
       .cookie("accessToken", accessToken, accessCookieOption)
       .cookie("refreshToken", refreshToken, refreshCookieOption)
-      .json({ success : true , message: "Admin registered successfully", data: admin });
+      .json({
+        success: true,
+        message: "Admin registered successfully",
+        data: admin,
+      });
   } catch (error) {
     console.log(error.message);
     console.log(error);
-    
+
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
@@ -83,7 +87,7 @@ export const checkUserName = async (req, res) => {
     const { username } = req.query;
 
     if (!username) {
-console.log(req.query);
+      console.log(req.query);
 
       return res.status(400).json({
         success: false,
@@ -267,6 +271,31 @@ export const approvedCommentByID = async (req, res) => {
     res
       .status(200)
       .json({ message: "comment isApproved property wil be true" });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+export const resetAccessToken = async (req, res) => {
+  try {
+    const id = req.user._id;
+    if (!id) {
+      throwError("could not get admin Id, try again", 400);
+    }
+    const { accessToken, refreshToken } = await generateTokens(id);
+
+    if (!accessToken || !refreshToken) {
+      throw new Error("error: could not generate tokens ");
+    }
+
+    const accessCookieOption = await cookieOptions("JWT_ACCESSTOKEN_EXPIRY");
+    const refreshCookieOption = await cookieOptions("JWT_REFRESHTOKEN_EXPIRY");
+
+    res
+      .status(200)
+      .cookie("accessToken", accessToken, accessCookieOption)
+      .cookie("refreshToken", refreshToken, refreshCookieOption)
+      .json({ success: true, message: "token updated" });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

@@ -1,10 +1,10 @@
 import { Admin } from "../models/admin.model.js";
 import { throwError } from "../utils/errorHelper.js";
 import jwt from "jsonwebtoken";
-const verifyJWT = async (req, res, next) => {
+const refreshJWT = async (req, res, next) => {
   try {
     const token =
-      req.cookies?.accessToken ||
+      req.cookies?.refreshToken ||
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
@@ -14,7 +14,7 @@ const verifyJWT = async (req, res, next) => {
     let decoded;
 
     try {
-      decoded = jwt.verify(token, process.env.JWT_ACCESSTOKEN_SECRET);
+      decoded = jwt.verify(token, process.env.JWT_REFRESHTOKEN_SECRET);
     } catch (error) {
       throwError("cannot decode token, user is Unauthorized", 401);
     }
@@ -28,6 +28,9 @@ const verifyJWT = async (req, res, next) => {
     if (!admin) {
       throwError("admin not found, register first", 404);
     }
+    if (admin.refreshToken !== token) {
+      throwError("Refresh token mismatch. Please login again", 401);
+    }
 
     req.user = admin;
     next();
@@ -35,4 +38,4 @@ const verifyJWT = async (req, res, next) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
-export default verifyJWT;
+export default refreshJWT;

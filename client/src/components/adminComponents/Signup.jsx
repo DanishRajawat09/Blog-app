@@ -8,7 +8,7 @@ const Signp = () => {
   const [usernameError, setUsernameError] = useState(null);
   const [username, setUsername] = useState("");
   const [usernameSuccess, setUsernameSuccess] = useState(false);
-  const { axios, setLoading } = useAppContext();
+  const { axios, setLoading, navigate } = useAppContext();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -23,6 +23,10 @@ const Signp = () => {
         data.success
           ? toast.success("registerd")
           : toast.error("something went wrong");
+
+        if (data.success === true) {
+          navigate("/");
+        }
       } else {
         toast.error("error please enter proper user name");
       }
