@@ -2,11 +2,22 @@ import React, { useState } from "react";
 import { blog_data } from "../../assets/assets";
 import { useEffect } from "react";
 import BlogTableItem from "../../components/adminComponents/BlogTableItem";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 const ListBlog = () => {
   const [blogs, setBlogs] = useState([]);
-
+  const { axios } = useAppContext();
   const fetchBlogs = async () => {
-    setBlogs(blog_data);
+    try {
+      const { data } = await axios.get("/api/v1/blog/admin");
+      if (data.success) {
+        setBlogs(data.data);
+      } else {
+        toast.error("could not get admin blogs");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   useEffect(() => {
     fetchBlogs();

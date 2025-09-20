@@ -168,11 +168,20 @@ export const getAdminBlogs = async (req, res) => {
       createdAt: -1,
     });
 
-    if (adminBlogs.length === 0) {
-      return res.status(404).json({ message: "No blogs found for this admin" });
+    if (!(adminBlogs.length > 0)) {
+      console.log();
+
+      return res
+        .status(404)
+        .json({
+          success: true,
+          message: "no blogs found plz add you",
+          data: adminBlogs,
+        });
     }
 
     res.status(200).json({
+      success: true,
       message: "get admin blogs successfully",
       data: adminBlogs,
     });
