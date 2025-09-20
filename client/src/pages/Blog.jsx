@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { assets, blog_data, comments_data } from "../assets/assets";
+import { assets } from "../assets/assets";
 import Moment from "moment";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -26,16 +26,19 @@ const Blog = () => {
   };
   const fetchComments = async () => {
     try {
-      const { data } = axios.post("/api/v1/blog/comments", { blogId: id });
+      const { data } = await axios.post("/api/v1/blog/comments", {
+        blogId: id,
+      });
       data.success ? setComments(data.comments) : setComments(data.comments);
     } catch (error) {
-      toast.error(error.response.data?.error);
+      toast.error(error.message);
+      // toast.error(error.response.data?.error);
     }
   };
   const addComment = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios("/api/v1/blog/add-comment", {
+      const { data } = await axios.post("/api/v1/blog/add-comment", {
         blog: id,
         name,
         content,
@@ -49,7 +52,8 @@ const Blog = () => {
         toast.error("error while adding comment");
       }
     } catch (error) {
-      toast.error(error.response.data?.error);
+      toast.error(error.message);
+      // toast.error(error.response.data?.error);
     }
   };
 

@@ -5,7 +5,9 @@ import { Blog } from "../models/blog.model.js";
 import { Comment } from "../models/comment.model.js";
 export const addBlog = async (req, res) => {
   try {
-    const { title, subTitle, description, category, isPublished } = req.body;
+    const { title, subTitle, description, category, isPublished } = JSON.parse(
+      req.body?.blog
+    );
 
     const userId = req.user?._id;
 
@@ -110,13 +112,11 @@ export const getBlogById = async (req, res) => {
     if (!blog) {
       throwError("give me a valid id for blog", 500);
     }
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "get blog by id successfully",
-        data: blog,
-      });
+    res.status(200).json({
+      success: true,
+      message: "get blog by id successfully",
+      data: blog,
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

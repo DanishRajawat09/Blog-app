@@ -30,7 +30,7 @@ router.route("/ispublished").patch(verifyJWT, togglePublished);
 // comments route
 router.route("/add-comment").post(verifyJWT, addComment);
 
-router.route("/comments").get(getBlogComments);
+router.route("/comments").post(getBlogComments);
 
 router.route("/admin-comments").get(verifyJWT, getAllAdminComments);
 export default router;

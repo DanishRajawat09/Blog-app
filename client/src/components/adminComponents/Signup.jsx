@@ -31,7 +31,7 @@ const Signp = () => {
         toast.error("error please enter proper user name");
       }
     } catch (error) {
-      toast.error(error.response.data?.error);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
