@@ -13,7 +13,9 @@ export const adminData = async (req, res) => {
       throwError("Unauthorized Request login r register first", 401);
     }
 
-    const adminInfo = await Admin.findById(_id).select("-password -refreshToken -_id -__v");
+    const adminInfo = await Admin.findById(_id).select(
+      "-password -refreshToken -_id -__v"
+    );
     if (!adminInfo) {
       throwError("user not found, register first", 401);
     }
@@ -50,7 +52,9 @@ export const registerAdmin = async (req, res) => {
       );
     }
 
-    const admin = await Admin.create({ email, password, username }).select("-password -refreshToken -_id -__v");;
+    const admin = await Admin.create({ email, password, username }).select(
+      "-password -refreshToken -_id -__v"
+    );
     if (!admin) {
       throwError("Server error while creating admin.", 500);
     }
@@ -199,11 +203,11 @@ export const getDashboard = async (req, res) => {
     if (!userId) {
       throwError("Unauthorized Request, cannot get admin Id", 401);
     }
-    const recentBlog = await Blog.find({ author: userId })
+    const recentBlogs = await Blog.find({ author: userId })
       .sort({ createdAt: -1 })
       .limit(5);
 
-    if (!recentBlog) {
+    if (!recentBlogs) {
       throwError("error while getting recent blogs", 500);
     }
 
@@ -220,10 +224,12 @@ export const getDashboard = async (req, res) => {
       blogs,
       comments,
       draft,
-      recentBlog,
+      recentBlogs,
     };
 
-    res.status(200).json({ message: "Dashboard Data", dashBoardData });
+    res
+      .status(200)
+      .json({ success: true, message: "Dashboard Data", dashBoardData });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
