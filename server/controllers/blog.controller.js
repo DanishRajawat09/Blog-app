@@ -286,7 +286,7 @@ export const getAllAdminComments = async (req, res) => {
       throwError("No comments found on your blogs", 404);
     }
 
-    res.status(200).json({ message: "get admin comments", comments: comments });
+    res.status(200).json({ success : true, message: "get admin comments", comments: comments });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

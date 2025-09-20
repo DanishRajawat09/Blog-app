@@ -255,7 +255,7 @@ export const deleteCommentById = async (req, res) => {
       throwError("could not delete the comment, try again", 500);
     }
 
-    res.status(200).json({ message: "comment is deleted" });
+    res.status(200).json({ success : true, message: "comment is deleted" });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -282,7 +282,7 @@ export const approvedCommentByID = async (req, res) => {
     }
     res
       .status(200)
-      .json({ message: "comment isApproved property wil be true" });
+      .json({success : true, message: "comment isApproved property wil be true" });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
