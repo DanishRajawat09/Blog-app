@@ -1,10 +1,35 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
-
+import toast from "react-hot-toast";
+import { useAppContext } from "../../context/appContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = async () => {};
+  const { axios, navigate } = useAppContext();
+  const handleSubmit = async (e) => {
+e.preventDefault()
+    try {
+      if (!email) {
+        toast.error("email is required");
+        return;
+      } else if (!password) {
+        toast.error("password is required");
+        return;
+      }
+      const { data } = await axios.post("/api/v1/admin/login", {
+        email,
+        password,
+      });
+      console.log(data);
+      
+      data.success
+        ? toast.success("welcome admin")
+        : toast.error("Something went wrong");
+      data.success && navigate("/");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -52,7 +77,13 @@ const Login = () => {
             </button>
           </form>
         </div>
-        <p className="text-sm text-center mt-1.5">do not have an Account?  <Link  className="text-blue-700 underline" to={"/signup"}> SignUp</Link></p>
+        <p className="text-sm text-center mt-1.5">
+          do not have an Account?{" "}
+          <Link className="text-blue-700 underline" to={"/signup"}>
+            {" "}
+            SignUp
+          </Link>
+        </p>
       </div>
     </div>
   );

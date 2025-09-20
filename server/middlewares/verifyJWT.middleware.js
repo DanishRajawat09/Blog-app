@@ -7,6 +7,8 @@ const verifyJWT = async (req, res, next) => {
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
 
+console.log(token);
+
     if (!token) {
       throwError("Unauthorized Request, login first", 401);
     }

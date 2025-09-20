@@ -40,7 +40,7 @@ export const registerAdmin = async (req, res) => {
       throwError("Password is required.", 400);
     }
 
-    const existedAdmin = await Admin.findOne({ email, username });
+    const existedAdmin = await Admin.findOne({$or:[{email : email} , {username : username} ]});
     if (existedAdmin) {
       throwError(
         "Admin already exists with this email. Please login instead.",
@@ -152,7 +152,7 @@ export const adminLogin = async (req, res) => {
       .status(200)
       .cookie("accessToken", accessToken, accessCookieOption)
       .cookie("refreshToken", refreshToken, refreshCookieOption)
-      .json({ message: "Admin logged in successfully", data: admin });
+      .json({success : true, message: "Admin logged in successfully", data: admin });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -181,7 +181,7 @@ export const adminLogout = async (req, res) => {
       .clearCookie("accessToken", accessCookieOption)
       .clearCookie("refreshToken", refreshCookieOption)
       .status(200)
-      .json({ message: "Logout successfully" });
+      .json({ message: "Logout successfully" , success : true});
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

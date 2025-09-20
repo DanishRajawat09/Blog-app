@@ -10,7 +10,7 @@ const ProtectedRoute = ({children}) => {
   }
 
 
-  if (!admin.length > 0) {
+  if (!admin.email) {
    return <Login/>
   }
 
