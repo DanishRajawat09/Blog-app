@@ -7,7 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { axios, navigate } = useAppContext();
   const handleSubmit = async (e) => {
-e.preventDefault()
+    e.preventDefault();
     try {
       if (!email) {
         toast.error("email is required");
@@ -21,7 +21,7 @@ e.preventDefault()
         password,
       });
       console.log(data);
-      
+
       data.success
         ? toast.success("welcome admin")
         : toast.error("Something went wrong");

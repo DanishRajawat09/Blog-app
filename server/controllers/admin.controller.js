@@ -13,7 +13,7 @@ export const adminData = async (req, res) => {
       throwError("Unauthorized Request login r register first", 401);
     }
 
-    const adminInfo = await Admin.findById(_id);
+    const adminInfo = await Admin.findById(_id).select("-password -refreshToken -_id -__v");
     if (!adminInfo) {
       throwError("user not found, register first", 401);
     }
@@ -40,7 +40,9 @@ export const registerAdmin = async (req, res) => {
       throwError("Password is required.", 400);
     }
 
-    const existedAdmin = await Admin.findOne({$or:[{email : email} , {username : username} ]});
+    const existedAdmin = await Admin.findOne({
+      $or: [{ email: email }, { username: username }],
+    });
     if (existedAdmin) {
       throwError(
         "Admin already exists with this email. Please login instead.",
@@ -48,7 +50,7 @@ export const registerAdmin = async (req, res) => {
       );
     }
 
-    const admin = await Admin.create({ email, password, username });
+    const admin = await Admin.create({ email, password, username }).select("-password -refreshToken -_id -__v");;
     if (!admin) {
       throwError("Server error while creating admin.", 500);
     }
@@ -152,7 +154,11 @@ export const adminLogin = async (req, res) => {
       .status(200)
       .cookie("accessToken", accessToken, accessCookieOption)
       .cookie("refreshToken", refreshToken, refreshCookieOption)
-      .json({success : true, message: "Admin logged in successfully", data: admin });
+      .json({
+        success: true,
+        message: "Admin logged in successfully",
+        data: admin,
+      });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -181,7 +187,7 @@ export const adminLogout = async (req, res) => {
       .clearCookie("accessToken", accessCookieOption)
       .clearCookie("refreshToken", refreshCookieOption)
       .status(200)
-      .json({ message: "Logout successfully" , success : true});
+      .json({ message: "Logout successfully", success: true });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

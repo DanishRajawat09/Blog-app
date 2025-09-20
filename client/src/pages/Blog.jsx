@@ -5,23 +5,52 @@ import Moment from "moment";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 const Blog = () => {
   const { id } = useParams();
+  const { axios } = useAppContext();
   const [data, setData] = useState(null);
   const [commets, setComments] = useState([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
 
   const fetchBlogData = async () => {
-    const data = blog_data.find((item) => item._id === id);
+    try {
+      const { data } = await axios.get(`/api/v1/blog/get-blog/${id}`);
 
-    setData(data);
+      data.success ? setData(data.data) : toast.error("something went wrong");
+    } catch (error) {
+      toast.error(error.response.data?.error);
+    }
   };
   const fetchComments = async () => {
-    setComments(comments_data);
+    try {
+      const { data } = axios.post("/api/v1/blog/comments", { blogId: id });
+      data.success ? setComments(data.comments) : setComments(data.comments);
+    } catch (error) {
+      toast.error(error.response.data?.error);
+    }
   };
-  const addComment = (e) => {
+  const addComment = async (e) => {
     e.preventDefault();
+    try {
+      const { data } = await axios("/api/v1/blog/add-comment", {
+        blog: id,
+        name,
+        content,
+      });
+
+      if (data.success) {
+        toast.success("Comment added");
+        setName("");
+        setContent("");
+      } else {
+        toast.error("error while adding comment");
+      }
+    } catch (error) {
+      toast.error(error.response.data?.error);
+    }
   };
 
   useEffect(() => {
@@ -121,7 +150,7 @@ const Blog = () => {
       <Footer />
     </div>
   ) : (
-    <Loader/>
+    <Loader />
   );
 };
 

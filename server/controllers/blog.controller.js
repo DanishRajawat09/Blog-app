@@ -83,12 +83,12 @@ export const getAllBlogs = async (req, res) => {
       return res.status(200).json({
         message: "No blogs for now",
         blogs: [],
-        success : false
+        success: false,
       });
     }
 
     res.status(200).json({
-      success : true,
+      success: true,
       message: "Getting blogs successfully",
       blogs: blogs,
     });
@@ -112,7 +112,11 @@ export const getBlogById = async (req, res) => {
     }
     res
       .status(200)
-      .json({ message: "get blog by id successfully", data: blog });
+      .json({
+        success: true,
+        message: "get blog by id successfully",
+        data: blog,
+      });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -245,7 +249,7 @@ export const getBlogComments = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     if (comments.length === 0) {
-      res.status(200).json({ message: "No Cmments" });
+      res.status(200).json({ success: true, message: "", comments });
     }
 
     res.status(200).json({

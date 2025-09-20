@@ -8,13 +8,11 @@ const Layout = () => {
   const logout = async () => {
     try {
       const { data } = await axios.post("/api/v1/admin/logout");
-      console.log(data);
-      
+
       data.success
         ? toast.success("admin logout")
         : toast.error("something went wrong");
       data.success && navigate("/");
-      
     } catch (error) {
       toast.error(error.message);
     }
