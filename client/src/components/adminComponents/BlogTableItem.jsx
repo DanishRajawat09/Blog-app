@@ -22,6 +22,8 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
       );
 
       if (data.success) {
+        console.log(data.success);
+        
         toast.success("blog deleted successfully");
         await fetchBlogs();
       } else {

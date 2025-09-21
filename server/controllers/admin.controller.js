@@ -187,10 +187,9 @@ export const adminLogout = async (req, res) => {
     if (!refreshCookieOption)
       throwError("Refresh cookie options not found", 500);
 
-    res
+    res.status(200)
       .clearCookie("accessToken", accessCookieOption)
       .clearCookie("refreshToken", refreshCookieOption)
-      .status(200)
       .json({ message: "Logout successfully", success: true });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });

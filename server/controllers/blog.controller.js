@@ -143,10 +143,6 @@ export const deleteBlogById = async (req, res) => {
 
     const deleteComment = await Comment.deleteMany({ blog: id });
 
-    if (deleteComment.deletedCount === 0) {
-      throwError("comments not found or could not be deleted", 404);
-    }
-
     res.status(200).json({
       success: true,
       message: "Blog deleted successfully",
@@ -280,7 +276,7 @@ export const getAllAdminComments = async (req, res) => {
       .populate("blog")
       .sort({ createdAt: -1 });
 
-    if (!comments || comments.length === 0) {
+    if (!comments) {
       throwError("No comments found on your blogs", 404);
     }
 

@@ -11,15 +11,18 @@ const Dashboard = () => {
     recentBlogs: [],
   });
 
-  const { axios } = useAppContext();
+  const { axios, fetchBlog } = useAppContext();
 
   const fetchDashboard = async () => {
     try {
       const { data } = await axios.get("/api/v1/admin/dashboard");
 
-      data.success
-        ? setDashboardData(data.dashBoardData)
-        : toast.error(data.message || "something went wrong");
+      if (data.success) {
+        setDashboardData(data.dashBoardData);
+        await fetchBlog();
+      } else {
+        toast.error(data.message || "something went wrong");
+      }
     } catch (error) {
       console.log("error while requesting the dashboard data", error);
     }

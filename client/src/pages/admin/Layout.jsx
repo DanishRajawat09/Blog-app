@@ -4,15 +4,15 @@ import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const Layout = () => {
-  const { axios, navigate, fetchAdminInfo, fetchBlog } = useAppContext();
+  const { axios, navigate, setAdmin, fetchAdminInfo} = useAppContext();
   const logout = async () => {
     try {
       const { data } = await axios.post("/api/v1/admin/logout");
 
       if (data.success) {
         toast.success("admin logout");
-        await fetchAdminInfo();
-        await fetchBlog();
+        await fetchAdminInfo()
+        setAdmin([]);
         navigate("/");
       } else {
         toast.error("something went wrong");

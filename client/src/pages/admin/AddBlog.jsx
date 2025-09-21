@@ -4,7 +4,7 @@ import Quill from "quill";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 const AddBlog = () => {
-  const { axios } = useAppContext();
+  const { axios , fetchBlog} = useAppContext();
   const [isAdding, setIsAdding] = useState(false);
   const editorRef = useRef(null);
   const quillRef = useRef(null);
@@ -45,6 +45,7 @@ const AddBlog = () => {
         setTitle("");
         quillRef.current.root.innerHTML = "";
         setCategory("startup");
+await fetchBlog()
       } else {
         toast.error("error whlie adding blog");
       }

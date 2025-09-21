@@ -36,6 +36,8 @@ const CommentTableItem = ({ comment, fetchComments }) => {
       );
 
       if (data.success) {
+        console.log(data);
+        
         toast.success("comment is deleted");
         fetchComments();
       } else {

@@ -1,7 +1,9 @@
 import { assets } from "../assets/assets.js";
-import { useAppContext } from "../context/appContext.jsx";
+import { useAppContext } from "../context/AppContext.jsx";
 const Navbar = () => {
   const { navigate, admin } = useAppContext();
+  console.log(admin);
+  
   return (
     <div className="flex justify-between items-center py-5 mx-8 sm:mx-20 xl:mx-32">
       <p className="text-primary text-4xl font-bold">D-BLOG</p>

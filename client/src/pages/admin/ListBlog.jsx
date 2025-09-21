@@ -5,12 +5,13 @@ import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 const ListBlog = () => {
   const [blogs, setBlogs] = useState([]);
-  const { axios } = useAppContext();
+  const { axios, fetchBlog } = useAppContext();
   const fetchBlogs = async () => {
     try {
       const { data } = await axios.get("/api/v1/blog/admin");
       if (data.success) {
         setBlogs(data.data);
+        await fetchBlog();
       } else {
         toast.error("could not get admin blogs");
       }
