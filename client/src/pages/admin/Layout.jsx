@@ -1,20 +1,24 @@
 import { Link, Outlet } from "react-router";
 import Sidebar from "../../components/adminComponents/Sidebar";
-import { useAppContext } from "../../context/appContext";
+import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const Layout = () => {
-  const { axios, navigate } = useAppContext();
+  const { axios, navigate, fetchAdminInfo, fetchBlog } = useAppContext();
   const logout = async () => {
     try {
       const { data } = await axios.post("/api/v1/admin/logout");
 
-      data.success
-        ? toast.success("admin logout")
-        : toast.error("something went wrong");
-      data.success && navigate("/");
+      if (data.success) {
+        toast.success("admin logout");
+        await fetchAdminInfo();
+        await fetchBlog();
+        navigate("/");
+      } else {
+        toast.error("something went wrong");
+      }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     }
   };
   return (

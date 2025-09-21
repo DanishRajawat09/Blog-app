@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { blog_data } from "../../assets/assets";
 import { useEffect } from "react";
 import BlogTableItem from "../../components/adminComponents/BlogTableItem";
 import { useAppContext } from "../../context/AppContext";

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/appContext";
+import { useAppContext } from "../../context/AppContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { axios, navigate } = useAppContext();
+  const { axios, navigate, fetchAdminInfo, fetchBlog } = useAppContext();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -20,14 +20,18 @@ const Login = () => {
         email,
         password,
       });
-      console.log(data);
 
-      data.success
-        ? toast.success("welcome admin")
-        : toast.error("Something went wrong");
-      data.success && navigate("/");
+      if (data.success) {
+        toast.success("welcome admin");
+        await fetchAdminInfo();
+        await fetchBlog();
+
+        navigate("/");
+      } else {
+        toast.error("Something went wrong");
+      }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     }
   };
 

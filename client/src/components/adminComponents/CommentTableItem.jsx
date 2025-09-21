@@ -16,7 +16,6 @@ const CommentTableItem = ({ comment, fetchComments }) => {
       );
 
       if (data.success) {
-        toast.success("comment Approved state is changed");
         fetchComments();
       } else {
         toast.error(data.message || "Something Went Wrong");

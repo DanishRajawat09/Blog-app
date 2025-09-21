@@ -21,7 +21,7 @@ const Blog = () => {
 
       data.success ? setData(data.data) : toast.error("something went wrong");
     } catch (error) {
-      toast.error(error.response.data?.error);
+      console.log(error.message);
     }
   };
   const fetchComments = async () => {
@@ -31,8 +31,7 @@ const Blog = () => {
       });
       data.success ? setComments(data.comments) : setComments(data.comments);
     } catch (error) {
-      toast.error(error.message);
-      // toast.error(error.response.data?.error);
+      console.log(error.message);
     }
   };
   const addComment = async (e) => {
@@ -52,8 +51,7 @@ const Blog = () => {
         toast.error("error while adding comment");
       }
     } catch (error) {
-      toast.error(error.message);
-      // toast.error(error.response.data?.error);
+      console.log(error.message);
     }
   };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { assets, blogCategories } from "../../assets/assets";
 import Quill from "quill";
-import { useAppContext } from "../../context/appContext";
+import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 const AddBlog = () => {
   const { axios } = useAppContext();
@@ -49,7 +49,7 @@ const AddBlog = () => {
         toast.error("error whlie adding blog");
       }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     } finally {
       setIsAdding(false);
     }

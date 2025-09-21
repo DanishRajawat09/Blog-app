@@ -84,8 +84,8 @@ export const getAllBlogs = async (req, res) => {
     if (blogs.length === 0) {
       return res.status(200).json({
         message: "No blogs for now",
-        blogs: [],
-        success: false,
+        blogs: blogs,
+        success: true,
       });
     }
 
@@ -171,13 +171,11 @@ export const getAdminBlogs = async (req, res) => {
     if (!(adminBlogs.length > 0)) {
       console.log();
 
-      return res
-        .status(404)
-        .json({
-          success: true,
-          message: "no blogs found plz add you",
-          data: adminBlogs,
-        });
+      return res.status(404).json({
+        success: true,
+        message: "no blogs found plz add you",
+        data: adminBlogs,
+      });
     }
 
     res.status(200).json({
@@ -286,7 +284,13 @@ export const getAllAdminComments = async (req, res) => {
       throwError("No comments found on your blogs", 404);
     }
 
-    res.status(200).json({ success : true, message: "get admin comments", comments: comments });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "get admin comments",
+        comments: comments,
+      });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

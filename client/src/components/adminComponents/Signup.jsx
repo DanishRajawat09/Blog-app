@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAppContext } from "../../context/appContext";
+import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const Signp = () => {
@@ -8,7 +8,8 @@ const Signp = () => {
   const [usernameError, setUsernameError] = useState(null);
   const [username, setUsername] = useState("");
   const [usernameSuccess, setUsernameSuccess] = useState(false);
-  const { axios, setLoading, navigate } = useAppContext();
+  const { axios, setLoading, navigate, fetchAdminInfo, fetchBlog } =
+    useAppContext();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -20,18 +21,19 @@ const Signp = () => {
           username,
           password,
         });
-        data.success
-          ? toast.success("registerd")
-          : toast.error("something went wrong");
-
-        if (data.success === true) {
+        if (data.success) {
+          toast.success("registerd");
+          await fetchAdminInfo();
+          await fetchBlog();
           navigate("/");
+        } else {
+          toast.error("something went wrong");
         }
       } else {
         toast.error("error please enter proper user name");
       }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
