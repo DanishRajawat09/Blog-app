@@ -4,6 +4,32 @@ import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry &&  !originalRequest.url.includes("/api/v1/admin/reset-tokens")) {
+      originalRequest._retry = true;
+
+      try {
+        // refresh token request (cookies sent automatically)
+        await axios.post("/api/v1/admin/reset-tokens");
+
+        // retry the original request
+        return axios(originalRequest);
+      } catch (err) {
+        // refresh failed → redirect to login
+        window.location.href = "/login";
+        return Promise.reject(err);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -23,7 +49,6 @@ export const AppProvider = ({ children }) => {
 
   const fetchAdminInfo = async () => {
     try {
-      setLoading(false);
       setLoading(true);
       const { data } = await axios.get("/api/v1/admin/info");
       data.success && setAdmin(data.adminInfo);

@@ -52,9 +52,7 @@ export const registerAdmin = async (req, res) => {
       );
     }
 
-    const admin = await Admin.create({ email, password, username }).select(
-      "-password -refreshToken -_id -__v"
-    );
+    const admin = await Admin.create({ email, password, username })
     if (!admin) {
       throwError("Server error while creating admin.", 500);
     }

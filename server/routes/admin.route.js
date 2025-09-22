@@ -8,8 +8,10 @@ import {
   getDashboard,
   registerAdmin,
   checkUserName,
+  resetAccessToken,
 } from "../controllers/admin.controller.js";
 import verifyJWT from "../middlewares/verifyJWT.middleware.js";
+import refreshJWT from "../middlewares/refreshJWT.middleware.js"
 const router = Router();
 
 router.route("/info").get(verifyJWT, adminData);
@@ -23,4 +25,5 @@ router
   .route("/approved-comment/:commentId")
   .patch(verifyJWT, approvedCommentByID);
 
+  router.route("/reset-tokens").post(refreshJWT , resetAccessToken)
 export default router;
