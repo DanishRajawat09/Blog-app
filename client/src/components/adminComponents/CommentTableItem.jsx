@@ -85,12 +85,11 @@ const CommentTableItem = ({ comment, fetchComments }) => {
               className="w-5 hover:scale-110 transition-all cursor-pointer"
             />
           ) : (
-            <p
+            <img
+              src={assets.cross_icon}
               onClick={notApprevedComment}
-              className=" cursor-pointer text-xs border border-red-600 bg-red-100 text-red-600 rounded-full px-3 py-1"
-            >
-              Not Approved
-            </p>
+              className="w-8 hover:scale-110 transition-all cursor-pointer"
+            ></img>
           )}
           <img
             onClick={deleteComment}

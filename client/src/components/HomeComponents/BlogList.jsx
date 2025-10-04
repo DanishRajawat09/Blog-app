@@ -22,7 +22,7 @@ const BlogList = () => {
 
   return (
     <div>
-      <div className="flex justify-center gap-4 sm:gap-8 my-10 relative">
+      <div className="flex justify-center mx-3 flex-wrap gap-4 sm:gap-8 my-10 relative">
         {blogCategories.map((item) => (
           <div key={item} className="relative">
             <button
