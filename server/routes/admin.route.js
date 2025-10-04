@@ -9,6 +9,7 @@ import {
   registerAdmin,
   checkUserName,
   resetAccessToken,
+  notApprovedCommentByID,
 } from "../controllers/admin.controller.js";
 import verifyJWT from "../middlewares/verifyJWT.middleware.js";
 import refreshJWT from "../middlewares/refreshJWT.middleware.js"
@@ -24,6 +25,9 @@ router.route("/delete-comment/:commentId").delete(verifyJWT, deleteCommentById);
 router
   .route("/approved-comment/:commentId")
   .patch(verifyJWT, approvedCommentByID);
+router
+  .route("/not-approved-comment/:commentId")
+  .patch(verifyJWT, notApprovedCommentByID);
 
   router.route("/reset-tokens").post(refreshJWT , resetAccessToken)
 export default router;

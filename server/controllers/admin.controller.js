@@ -284,6 +284,32 @@ export const approvedCommentByID = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
+export const notApprovedCommentByID = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const userId = req.user._id;
+    if (!commentId) {
+      throwError("could not get BlogId ", 402);
+    }
+    if (!userId) {
+      throwError("Unauthorized Request, cannot get admin Id", 401);
+    }
+
+    const comment = await Comment.findOneAndUpdate(
+      { _id: commentId, blogAuthor: userId },
+      { isApproved: false }
+    );
+
+    if (!comment) {
+      throwError("could not update is approved , try again", 500);
+    }
+    res
+      .status(200)
+      .json({success : true, message: "comment isApproved property wil be false" });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
 
 export const resetAccessToken = async (req, res) => {
   try {

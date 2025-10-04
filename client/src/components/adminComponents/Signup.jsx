@@ -49,6 +49,8 @@ const Signp = () => {
         const { data } = await axios.get("/api/v1/admin/username", {
           params: { username },
         });
+        console.log(data);
+        
         setUsernameError(!data.success);
         setUsernameSuccess(data.success);
       } catch (error) {

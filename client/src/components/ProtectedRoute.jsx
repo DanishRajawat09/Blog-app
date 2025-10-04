@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAppContext } from '../context/appContext'
+import { useAppContext } from '../context/AppContext'
 import Login from './adminComponents/Login'
 
 

@@ -10,6 +10,7 @@ import "quill/dist/quill.snow.css"
 import {Toaster} from "react-hot-toast"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Signp from "./components/adminComponents/Signup";
+import Login from "./components/adminComponents/Login";
 const App = () => {
 
 
@@ -18,6 +19,7 @@ const App = () => {
       <Toaster/>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signp />} />
         <Route path="/blog/:id" element={<Blog />} />
         <Route path="/admin" element={<ProtectedRoute>

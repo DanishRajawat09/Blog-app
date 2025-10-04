@@ -24,6 +24,21 @@ const CommentTableItem = ({ comment, fetchComments }) => {
       console.log("request error for approved comments", error);
     }
   };
+  const notApprevedComment = async () => {
+    try {
+      const { data } = await axios.patch(
+        `/api/v1/admin/not-approved-comment/${_id}`
+      );
+
+      if (data.success) {
+        fetchComments();
+      } else {
+        toast.error(data.message || "Something Went Wrong");
+      }
+    } catch (error) {
+      console.log("request error for approved comments", error);
+    }
+  };
   const deleteComment = async () => {
     try {
       const confirm = window.confirm(
@@ -37,7 +52,7 @@ const CommentTableItem = ({ comment, fetchComments }) => {
 
       if (data.success) {
         console.log(data);
-        
+
         toast.success("comment is deleted");
         fetchComments();
       } else {
@@ -70,8 +85,11 @@ const CommentTableItem = ({ comment, fetchComments }) => {
               className="w-5 hover:scale-110 transition-all cursor-pointer"
             />
           ) : (
-            <p className="text-xs border border-green-600 bg-green-100 text-green-600 rounded-full px-3 py-1">
-              Approved
+            <p
+              onClick={notApprevedComment}
+              className=" cursor-pointer text-xs border border-red-600 bg-red-100 text-red-600 rounded-full px-3 py-1"
+            >
+              Not Approved
             </p>
           )}
           <img

@@ -2,37 +2,44 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.baseURL = "http://localhost:5500";
 axios.defaults.withCredentials = true;
 
-axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+// logout flag check (to avoid reload)
+export const useAxiosInterceptor = () => {
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry &&  !originalRequest.url.includes("/api/v1/admin/reset-tokens")) {
-      originalRequest._retry = true;
+        if (
+          error.response?.status === 401 &&
+          !originalRequest._retry &&
+          !originalRequest.url.includes("/api/v1/admin/reset-tokens")
+        ) {
+          originalRequest._retry = true;
 
-      try {
-        // refresh token request (cookies sent automatically)
-        await axios.post("/api/v1/admin/reset-tokens");
+          try {
+            await axios.post("/api/v1/admin/reset-tokens");
+            return axios(originalRequest);
+          } catch {
+            // don't redirect — let ProtectedRoute handle it
+            return Promise.reject(error);
+          }
+        }
 
-        // retry the original request
-        return axios(originalRequest);
-      } catch (err) {
-        // refresh failed → redirect to login
-        window.location.href = "/login";
-        return Promise.reject(err);
+        return Promise.reject(error);
       }
-    }
+    );
 
-    return Promise.reject(error);
-  }
-);
-
+    return () => axios.interceptors.response.eject(interceptor);
+  }, []);
+};
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  useAxiosInterceptor();
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
   const [input, setInput] = useState("");
