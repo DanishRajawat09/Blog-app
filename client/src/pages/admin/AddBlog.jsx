@@ -1,4 +1,4 @@
-import React, {useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import { assets, blogCategories } from "../../assets/assets";
 import Quill from "quill";
 import { useAppContext } from "../../context/AppContext";
@@ -57,11 +57,11 @@ const AddBlog = () => {
   };
 
   // const generateContent = () => {};
-  // useEffect(() => {
-  //   if (!quillRef.current && editorRef.current) {
-  //     quillRef.current = new Quill(editorRef.current, { theme: "snow" });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!quillRef.current && editorRef.current) {
+      quillRef.current = new Quill(editorRef.current, { theme: "snow" });
+    }
+  }, []);
 
   return (
     <form
