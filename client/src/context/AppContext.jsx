@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-axios.defaults.baseURL = "http://localhost:5500";
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
 
 // logout flag check (to avoid reload)

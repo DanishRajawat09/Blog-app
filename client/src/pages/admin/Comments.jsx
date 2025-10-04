@@ -17,7 +17,11 @@ const Comments = () => {
         ? setComments(data.comments)
         : toast.error(data.message || "something went wrong");
     } catch (error) {
-      console.log("request error for admin comments", error);
+         if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
 

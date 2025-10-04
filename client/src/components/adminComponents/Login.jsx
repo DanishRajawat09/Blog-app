@@ -31,7 +31,11 @@ const Login = () => {
         toast.error("Something went wrong");
       }
     } catch (error) {
-      console.log(error.message);
+      if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
 

@@ -5,14 +5,14 @@ export const generateTokens = async (id) => {
     const admin = await Admin.findById(id);
 
     if (!admin) {
-      throw new Error("cannot generate token , couldn't find Account ");
+      throwError("couldn't find Account for session", 500);
     }
 
     const accessToken = await admin.generateAccessToken();
     const refreshToken = await admin.generateRefreshToken();
 
     if (!accessToken || !refreshToken) {
-      throw new Error("error: could not generate tokens ");
+            throwError("error: could not sessions", 500);
     }
 
     admin.refreshToken = refreshToken;

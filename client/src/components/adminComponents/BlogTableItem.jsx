@@ -29,8 +29,12 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
       } else {
         toast.error("error while deleting blog");
       }
-    } catch (err) {
-      console.log("delete blog request error", err);
+    } catch (error) {
+    if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
 
@@ -44,8 +48,12 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
       } else {
         toast.error("error while deleting blog");
       }
-    } catch (err) {
-      console.log("toggle published request error", err);
+    } catch (error) {
+         if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
 

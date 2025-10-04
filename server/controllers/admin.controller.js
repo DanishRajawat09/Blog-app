@@ -10,7 +10,7 @@ export const adminData = async (req, res) => {
   try {
     const { _id } = req.user;
     if (!_id) {
-      throwError("Unauthorized Request login r register first", 401);
+      throwError("Unauthorized Request login or register first", 401);
     }
 
     const adminInfo = await Admin.findById(_id).select(
@@ -41,6 +41,9 @@ export const registerAdmin = async (req, res) => {
     if (!password) {
       throwError("Password is required.", 400);
     }
+    if (!password.length > 8) {
+      throwError("Password must be 8 character.", 400);
+    }
 
     const existedAdmin = await Admin.findOne({
       $or: [{ email: email }, { username: username }],
@@ -52,14 +55,14 @@ export const registerAdmin = async (req, res) => {
       );
     }
 
-    const admin = await Admin.create({ email, password, username })
+    const admin = await Admin.create({ email, password, username });
     if (!admin) {
-      throwError("Server error while creating admin.", 500);
+      throwError("could not create account, something went wrong.", 500);
     }
 
     const { accessToken, refreshToken } = await generateTokens(admin._id);
     if (!accessToken || !refreshToken) {
-      throwError("Could not generate tokens.", 500);
+      throwError("could not create sessions.", 500);
     }
 
     const accessCookieOption = await cookieOptions("JWT_ACCESSTOKEN_EXPIRY");
@@ -79,9 +82,6 @@ export const registerAdmin = async (req, res) => {
         data: admin,
       });
   } catch (error) {
-    console.log(error.message);
-    console.log(error);
-
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
@@ -137,12 +137,12 @@ export const adminLogin = async (req, res) => {
 
     const isPasswordCorrect = await admin.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
-      throwError("Incorrect password. Please try again.", 401);
+      throwError("Incorrect password", 401);
     }
 
     const { accessToken, refreshToken } = await generateTokens(admin._id);
     if (!accessToken || !refreshToken) {
-      throwError("Could not generate tokens.", 500);
+      throwError("session error", 500);
     }
 
     const accessCookieOption = await cookieOptions("JWT_ACCESSTOKEN_EXPIRY");
@@ -170,7 +170,7 @@ export const adminLogout = async (req, res) => {
   try {
     const userId = req.user?._id;
     if (!userId) {
-      throwError("User ID not found, cannot log out", 400);
+      throwError("Admin not found, cannot log out", 400);
     }
 
     const admin = await Admin.findById(userId);
@@ -185,7 +185,8 @@ export const adminLogout = async (req, res) => {
     if (!refreshCookieOption)
       throwError("Refresh cookie options not found", 500);
 
-    res.status(200)
+    res
+      .status(200)
       .clearCookie("accessToken", accessCookieOption)
       .clearCookie("refreshToken", refreshCookieOption)
       .json({ message: "Logout successfully", success: true });
@@ -198,7 +199,7 @@ export const getDashboard = async (req, res) => {
   try {
     const userId = req.user._id;
     if (!userId) {
-      throwError("Unauthorized Request, cannot get admin Id", 401);
+      throwError("Unauthorized Request, cannot get admin", 401);
     }
     const recentBlogs = await Blog.find({ author: userId })
       .sort({ createdAt: -1 })
@@ -237,10 +238,10 @@ export const deleteCommentById = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user._id;
     if (!commentId) {
-      throwError("could not get BlogId ", 402);
+      throwError("could not get comment info ", 402);
     }
     if (!userId) {
-      throwError("Unauthorized Request, cannot get admin Id", 401);
+      throwError("Unauthorized Request, cannot get admin ", 401);
     }
 
     const deleteComment = await Comment.findOneAndDelete({
@@ -252,7 +253,7 @@ export const deleteCommentById = async (req, res) => {
       throwError("could not delete the comment, try again", 500);
     }
 
-    res.status(200).json({ success : true, message: "comment is deleted" });
+    res.status(200).json({ success: true, message: "comment is deleted" });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -263,10 +264,10 @@ export const approvedCommentByID = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user._id;
     if (!commentId) {
-      throwError("could not get BlogId ", 402);
+      throwError("could not get comment info ", 402);
     }
     if (!userId) {
-      throwError("Unauthorized Request, cannot get admin Id", 401);
+      throwError("Unauthorized Request, cannot get admin", 401);
     }
 
     const comment = await Comment.findOneAndUpdate(
@@ -277,9 +278,10 @@ export const approvedCommentByID = async (req, res) => {
     if (!comment) {
       throwError("could not update is approved , try again", 500);
     }
-    res
-      .status(200)
-      .json({success : true, message: "comment isApproved property wil be true" });
+    res.status(200).json({
+      success: true,
+      message: "comment isApproved property wil be true",
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -289,10 +291,10 @@ export const notApprovedCommentByID = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user._id;
     if (!commentId) {
-      throwError("could not get BlogId ", 402);
+      throwError("could not get comment info ", 402);
     }
     if (!userId) {
-      throwError("Unauthorized Request, cannot get admin Id", 401);
+      throwError("Unauthorized Request, cannot get admin ", 401);
     }
 
     const comment = await Comment.findOneAndUpdate(
@@ -303,9 +305,10 @@ export const notApprovedCommentByID = async (req, res) => {
     if (!comment) {
       throwError("could not update is approved , try again", 500);
     }
-    res
-      .status(200)
-      .json({success : true, message: "comment isApproved property wil be false" });
+    res.status(200).json({
+      success: true,
+      message: "comment isApproved property wil be false",
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -315,12 +318,12 @@ export const resetAccessToken = async (req, res) => {
   try {
     const id = req.user._id;
     if (!id) {
-      throwError("could not get admin Id, try again", 400);
+      throwError("could not get admin , try again", 400);
     }
     const { accessToken, refreshToken } = await generateTokens(id);
 
     if (!accessToken || !refreshToken) {
-      throw new Error("error: could not generate tokens ");
+      throwError("error: could not generate tokens ", 500);
     }
 
     const accessCookieOption = await cookieOptions("JWT_ACCESSTOKEN_EXPIRY");

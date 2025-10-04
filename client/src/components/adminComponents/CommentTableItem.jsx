@@ -21,7 +21,11 @@ const CommentTableItem = ({ comment, fetchComments }) => {
         toast.error(data.message || "Something Went Wrong");
       }
     } catch (error) {
-      console.log("request error for approved comments", error);
+       if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
   const notApprevedComment = async () => {
@@ -36,7 +40,11 @@ const CommentTableItem = ({ comment, fetchComments }) => {
         toast.error(data.message || "Something Went Wrong");
       }
     } catch (error) {
-      console.log("request error for approved comments", error);
+          if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
   const deleteComment = async () => {
@@ -51,7 +59,6 @@ const CommentTableItem = ({ comment, fetchComments }) => {
       );
 
       if (data.success) {
-        console.log(data);
 
         toast.success("comment is deleted");
         fetchComments();
@@ -59,7 +66,11 @@ const CommentTableItem = ({ comment, fetchComments }) => {
         toast.error(data.message || "Something Went Wrong");
       }
     } catch (error) {
-      console.log("request error for delete comment", error);
+         if (error.response.status >= 400 && error.response.status < 500) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("something went wrong");
+      }
     }
   };
 

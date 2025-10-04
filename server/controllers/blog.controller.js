@@ -18,7 +18,7 @@ export const addBlog = async (req, res) => {
     }
 
     if (!userId) {
-      throwError("Unauthorized Request, check you are login or not", 401);
+      throwError("Unauthorized Request,", 401);
     }
     if (!imageFile) {
       throwError("Image file is required", 400);
@@ -104,7 +104,7 @@ export const getBlogById = async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-      throwError("blog id not found", 400);
+      throwError("blog info not found", 400);
     }
 
     const blog = await Blog.findById({ _id: id });
@@ -128,7 +128,7 @@ export const deleteBlogById = async (req, res) => {
     const userId = req.user._id;
 
     if (!id) {
-      throwError("blog id is not found", 400);
+      throwError("blog info is not found", 400);
     }
 
     if (!userId) {
@@ -188,13 +188,13 @@ export const togglePublished = async (req, res) => {
   try {
     const { id } = req.body;
     if (!id) {
-      throwError("could not get id for toggle published", 404);
+      throwError("could not get info for toggle published", 404);
     }
 
     const blog = await Blog.findById(id);
 
     if (!blog) {
-      throwError("cannot find blog by this id", 404);
+      throwError("cannot find blog by this info", 404);
     }
 
     blog.isPublished = !blog.isPublished;
@@ -243,7 +243,7 @@ export const getBlogComments = async (req, res) => {
   try {
     const { blogId } = req.body;
     if (!blogId) {
-      throwError("plz provide the blog id", 402);
+      throwError("plz provide the blog info", 402);
     }
 
     const comments = await Comment.find({
@@ -270,7 +270,7 @@ export const getAllAdminComments = async (req, res) => {
     const userId = req.user._id;
 
     if (!userId) {
-      throwError("UnAuthorized Request, cannot get adminId", 401);
+      throwError("UnAuthorized Request, cannot get admin", 401);
     }
     const comments = await Comment.find({ blogAuthor: userId })
       .populate("blog")
@@ -280,13 +280,11 @@ export const getAllAdminComments = async (req, res) => {
       throwError("No comments found on your blogs", 404);
     }
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "get admin comments",
-        comments: comments,
-      });
+    res.status(200).json({
+      success: true,
+      message: "get admin comments",
+      comments: comments,
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
