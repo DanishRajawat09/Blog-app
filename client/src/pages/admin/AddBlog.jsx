@@ -31,7 +31,7 @@ const AddBlog = () => {
       formData.append("blog", JSON.stringify(blog));
       formData.append("image", image);
 
-      console.log(formData);
+     
 
       const { data } = await axios.post("/api/v1/blog/create-blog", formData, {
         headers: {

@@ -18,7 +18,7 @@ const BlogList = () => {
         blog.category.toLowerCase().includes(input.toLowerCase())
     );
   };
-  console.log(filteredBlogs());
+  filteredBlogs()
 
   return (
     <div>
