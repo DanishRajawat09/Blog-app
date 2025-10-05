@@ -18,15 +18,19 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/blog", blogRouter);
 const PORT = process.env.PORT || 3000;
 
-await connect()
-  .then(() => {
-    console.log("DataBase Connected");
+
+const startServer = async () => {
+  try {
+    await connect(); // only first cold start actually connects
     app.listen(PORT, () => {
-      console.log(`server is running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on port ${process.env.PORT || 5500}`);
     });
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app;
