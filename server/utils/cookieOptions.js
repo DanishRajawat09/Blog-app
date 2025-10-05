@@ -1,6 +1,6 @@
 import ms from "ms";
 
-export const cookieOptions = async (expiryKey, sameSite = "none") => {
+export const cookieOptions = async (expiryKey) => {
   const expiryValue = process.env[expiryKey];
   if (!expiryValue) {
     throw new Error(`Missing expiry value in env: ${expiryKey}`);
@@ -16,6 +16,6 @@ export const cookieOptions = async (expiryKey, sameSite = "none") => {
     httpOnly: true,
     secure:  isProduction, // set to true in production with https
     maxAge: expiryms,
-    SameSite: isProduction ? "none" : "lax",
+    sameSite: isProduction ? "none" : "lax",
   };
 };
