@@ -10,11 +10,12 @@ export const cookieOptions = async (expiryKey, sameSite = "none") => {
   if (!expiryms) {
     throw new Error(`Invalid expiry format: ${expiryValue}`);
   }
+    const isProduction = process.env.NODE_ENV === "production";
 
   return {
     httpOnly: true,
-    secure: false, // set to true in production with https
+    secure:  isProduction, // set to true in production with https
     maxAge: expiryms,
-    SameSite: sameSite,
+    SameSite: isProduction ? "none" : "lax",
   };
 };
