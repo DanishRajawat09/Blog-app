@@ -21,7 +21,7 @@ const Blog = () => {
 
       data.success ? setData(data.data) : toast.error("something went wrong");
     } catch (error) {
-          if (error.response.status >= 400 && error.response.status < 500) {
+      if (error.response.status >= 400 && error.response.status < 500) {
         toast.error(error.response.data.error);
       } else {
         toast.error("something went wrong");
@@ -35,7 +35,7 @@ const Blog = () => {
       });
       data.success ? setComments(data.comments) : setComments(data.comments);
     } catch (error) {
-        if (error.response.status >= 400 && error.response.status < 500) {
+      if (error.response.status >= 400 && error.response.status < 500) {
         toast.error(error.response.data.error);
       } else {
         toast.error("something went wrong");
@@ -59,7 +59,7 @@ const Blog = () => {
         toast.error("error while adding comment");
       }
     } catch (error) {
-         if (error.response.status >= 400 && error.response.status < 500) {
+      if (error.response.status >= 400 && error.response.status < 500) {
         toast.error(error.response.data.error);
       } else {
         toast.error("something went wrong");
@@ -88,7 +88,7 @@ const Blog = () => {
         </h1>
         <h2 className="my-5 max-w-lg truncate mx-auto">{data.subTitle}</h2>
         <p className="inline-block py-1 px-4 rounded-full mb-6 border text-sm border-primary/35 bg-primary/5 font-medium text-primary">
-          Danish
+          {data?.author?.username}
         </p>
       </div>
       <div className="mx-5 max-w-5xl md:mx-auto my-10 mt-6">

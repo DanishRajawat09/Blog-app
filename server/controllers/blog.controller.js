@@ -107,7 +107,7 @@ export const getBlogById = async (req, res) => {
       throwError("blog info not found", 400);
     }
 
-    const blog = await Blog.findById({ _id: id });
+    const blog = await Blog.findById({ _id: id }).populate("author");
 
     if (!blog) {
       throwError("give me a valid id for blog", 500);
